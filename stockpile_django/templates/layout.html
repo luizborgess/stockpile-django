@@ -20,14 +20,24 @@
 
     <div class="collapse navbar-collapse" id="navbarContent">
       <ul class="navbar-nav ms-auto">
+        <!-- Itens -->
         <li class="nav-item">
-          <a href="/" class="btn btn-light me-2 mt-2 mt-lg-0 w-100 text-start">Itens</a>
+          <a class="btn btn-light me-2 fw-bold" href="/">Itens</a>
         </li>
+
+        <!-- Novo item -->
         <li class="nav-item">
-          <a href="/item/new" class="btn btn-warning mt-2 mt-lg-0 w-100 text-start">Novo item</a>
+          <a class="btn btn-warning me-2 fw-bold" href="/item/new">Novo item</a>
         </li>
           {% if user.is_authenticated %}
-    <a href="{% url 'logout' %}" class="btn btn-outline-light">Sair</a>
+        <!-- Logout (POST) -->
+        <li class="nav-item">
+          <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-outline-light fw-bold">Logout</button>
+          </form>
+        </li>
+
 {% endif %}
       </ul>
     </div>
