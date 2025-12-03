@@ -1,42 +1,40 @@
 {% extends "layout.html" %}
-{% load form_extras %}
+{% load widget_tweaks %}
 {% block content %}
 
 <h2 class="mb-4">Novo Item</h2>
 
-<div class="card shadow-sm">
-  <div class="card-body">
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6"> <div class="card shadow-sm">
+      <div class="card-body p-4">
 
-    <form action="/item/create" method="post">
-      {% csrf_token %}
+        <form action="/item/create" method="post">
+          {% csrf_token %}
 
-      <div class="mb-3">
-        {{ form.name.label_tag }}
-        {{ form.name|add_class:"form-control" }}
+          {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label fw-bold">{{ field.label }}</label>
+            {% render_field field class+="form-control" placeholder=field.label %}
+
+            {% if field.help_text %}
+              <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+
+            {% if field.errors %}
+              <div class="text-danger small">{{ field.errors.0 }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+
+          <div class="d-grid gap-2 mt-4">
+            <button class="btn btn-primary btn-lg">Adicionar Item</button>
+            <a href="/" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+
+        </form>
+
       </div>
-
-      <div class="mb-3">
-        {{ form.category.label_tag }}
-        {{ form.category|add_class:"form-control" }}
-      </div>
-
-      <div class="mb-3">
-        {{ form.qty.label_tag }}
-        {{ form.qty|add_class:"form-control" }}
-      </div>
-
-      <div class="mb-3">
-        {{ form.threshold.label_tag }}
-        {{ form.threshold|add_class:"form-control" }}
-      </div>
-
-      <div class="mb-3">
-        {{ form.notes.label_tag }}
-        {{ form.notes|add_class:"form-control" }}
-      </div>
-
-      <button class="btn btn-primary">Adicionar</button>
-    </form>
+    </div>
 
   </div>
 </div>
