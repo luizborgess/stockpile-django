@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% load form_extras %}
+{% block content %}
+
+<h2 class="mb-4">Novo Item</h2>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+
+    <form action="/item/create" method="post">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        {{ form.name.label_tag }}
+        {{ form.name|add_class:"form-control" }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.category.label_tag }}
+        {{ form.category|add_class:"form-control" }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.qty.label_tag }}
+        {{ form.qty|add_class:"form-control" }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.threshold.label_tag }}
+        {{ form.threshold|add_class:"form-control" }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.notes.label_tag }}
+        {{ form.notes|add_class:"form-control" }}
+      </div>
+
+      <button class="btn btn-primary">Adicionar</button>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}
