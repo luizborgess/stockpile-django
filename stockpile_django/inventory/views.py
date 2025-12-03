@@ -31,3 +31,22 @@ def remove_qty(request, item_id):
         item.qty -= 1
         item.save()
     return redirect("/")
+
+
+def add_10(request, id):
+    item = get_object_or_404(Item, pk=id)
+    item.qty += 10
+    item.save()
+    return redirect('/')
+
+
+def sub_10(request, id):
+    item = get_object_or_404(Item, pk=id)
+    # Lógica opcional: Impedir que fique negativo
+    if item.qty >= 10:
+        item.qty -= 10
+    else:
+        item.qty = 0  # ou deixe ficar negativo se preferir
+
+    item.save()
+    return redirect('/')

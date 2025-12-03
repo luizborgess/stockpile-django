@@ -8,29 +8,34 @@
   <div class="list-group shadow-sm">
 
     {% for i in items %}
-      <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+<div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
 
-        <div class="me-auto"> <div class="fw-bold fs-5">{{ i.name }}</div>
+  <div class="me-auto">
+    <strong>{{ i.name }}</strong>
+    <span class="badge bg-secondary ms-1">{{ i.qty }}</span>
 
-          <div class="mt-1">
-            <span class="badge bg-secondary">{{ i.qty }} un</span>
-
-            {% if i.category %}
+                {% if i.category %}
               <span class="badge bg-info text-dark">{{ i.category }}</span>
             {% endif %}
-
-            {% if i.qty <= i.threshold %}
-              <span class="badge bg-danger">Baixo estoque</span>
+                {% if i.qty <= i.threshold %}
+              <span class="badge bg-danger">Baixo</span>
             {% endif %}
-          </div>
-        </div>
-
-        <div class="d-flex">
-          <a href="/item/{{ i.id }}/add" class="btn btn-success btn-sm me-2" style="width: 40px;">➕</a>
-          <a href="/item/{{ i.id }}/remove" class="btn btn-danger btn-sm" style="width: 40px;">➖</a>
-        </div>
-
       </div>
+  <div class="d-flex align-items-center gap-1">
+
+    <a href="/item/{{ i.id }}/sub10" class="btn btn-outline-danger btn-sm fw-bold" title="-10 unidades">-10</a>
+
+    <a href="/item/{{ i.id }}/remove" class="btn btn-danger btn-sm" title="-1 unidade">➖</a>
+
+    <span class="text-muted mx-1">|</span>
+
+    <a href="/item/{{ i.id }}/add" class="btn btn-success btn-sm" title="+1 unidade">➕</a>
+
+    <a href="/item/{{ i.id }}/add10" class="btn btn-outline-success btn-sm fw-bold" title="+10 unidades">+10</a>
+
+  </div>
+
+</div>
     {% endfor %}
 
   </div>

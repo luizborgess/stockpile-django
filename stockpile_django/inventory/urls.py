@@ -8,4 +8,7 @@ urlpatterns = [
     # novos:
     path("item/<int:item_id>/add", views.add_qty),
     path("item/<int:item_id>/remove", views.remove_qty),
+# NOVAS ROTAS
+    path('item/<int:id>/add10', views.add_10, name='add_10'),
+    path('item/<int:id>/sub10', views.sub_10, name='sub_10'),
 ]
