@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h3 class="fw-bold">Deletar Item</h3>
+            <p class="mt-2">Tem certeza que deseja deletar o item abaixo?</p>
+
+            <div class="alert alert-danger">
+                <strong>{{ item.name }}</strong>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <button class="btn btn-danger">Sim, deletar</button>
+                <a href="/" class="btn btn-secondary ms-2">Cancelar</a>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

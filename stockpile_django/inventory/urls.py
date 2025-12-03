@@ -5,6 +5,8 @@ urlpatterns = [
     path("", views.index),
     path("item/new", views.new_item),
     path("item/create", views.create_item),
+    path("item/<int:item_id>/delete", views.delete_item, name="delete_item"),
+
     # novos:
     path("item/<int:item_id>/add", views.add_qty),
     path("item/<int:item_id>/remove", views.remove_qty),
