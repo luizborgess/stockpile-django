@@ -1,18 +1,50 @@
 version: "3.9"
 
 services:
+  traefik:
+    image: traefik:v3.6.2
+    container_name: traefik
+    restart: always
+    environment:
+      - TZ=America/Sao_Paulo
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    ports:
+      - 80:80
+      - 443:443 # HTTPS entryPoints
+    labels:
+      - "traefik.enable=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.le.acme.httpchallenge=true"
+      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.le.acme.email=luizplayer2016@hotmail.com"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - traefik:/certs
+      - ./letsencrypt:/letsencrypt
+
   web:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: stockpile_django
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     volumes:
-      # Monte sua pasta local dentro do container
       - ./data:/app/data
     environment:
-      # Django não quebra quando rodando atrás de proxy
       - PYTHONUNBUFFERED=1
       - SQLITE_PATH=/app/data/db.sqlite3
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.stockpile.rule=Host(`stock.hlspace.org`)"
+      - "traefik.http.routers.stockpile.entrypoints=websecure"
+      - "traefik.http.routers.stockpile.tls.certresolver=le"
+      - "traefik.http.services.stockpile.loadbalancer.server.port=8000"
+
+volumes:
+  traefik:
+    name: traefik
