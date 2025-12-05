@@ -7,14 +7,12 @@ services:
     restart: always
     environment:
       - TZ=America/Sao_Paulo
-      - CF_API_EMAIL=${CF_API_EMAIL}
-      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
     ports:
       - 80:80
       - 443:443 # HTTPS entryPoints
     labels:
-      - "traefik.enable=true"
       - "--entrypoints.web.address=:80"
+      - "--log.level=INFO"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.le.acme.httpchallenge=true"
       - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
@@ -41,8 +39,6 @@ services:
       - "traefik.http.routers.stockpile.rule=Host(`stock.hlspace.org`)"
       - "traefik.http.routers.stockpile.entrypoints=websecure"
       - "traefik.http.routers.stockpile.tls.certresolver=le"
-      - "traefik.http.services.stockpile.loadbalancer.server.port=8000"
-
 volumes:
   traefik:
     name: traefik
