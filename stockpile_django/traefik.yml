@@ -1,0 +1,32 @@
+global:
+  checkNewVersion: true
+api:
+  dashboard: true
+  insecure: true
+log:
+  level: INFO
+  # Uncomment the next line to enable logging to a file
+  # filepath: /var/log/traefik.log
+
+accessLog: {}
+
+providers:
+  docker:
+    network: proxy
+    exposedByDefault: false
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: letsencrypt
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: luizplayer2016@hotmail.com
+      storage: /letsencrypt/acme.json
+      tlsChallenge: {}
