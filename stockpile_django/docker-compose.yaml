@@ -2,32 +2,47 @@ version: "3.9"
 
 services:
   traefik:
-    image: traefik:v3.6.2
+    image: traefik:latest
     container_name: traefik
-    restart: always
-    environment:
-      - TZ=America/Sao_Paulo
+    restart: unless-stopped
+    networks:
+      - proxy
     ports:
-      - 80:80
-      - 443:443 # HTTPS entryPoints
-    labels:
-      - "--entrypoints.web.address=:80"
-      - "--log.level=INFO"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.le.acme.httpchallenge=true"
-      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.le.acme.email=luizplayer2016@hotmail.com"
-      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "80:80"
+      - "443:443"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - traefik:/certs
-      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/certs
+    labels:
+      # --- Dashboard ---
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      # --- Logging ---
+      - "--log.level=INFO"
+      - "--accesslog=true"
+      # --- Docker Provider ---
+      - "--providers.docker=true"
+      - "--providers.docker.network=proxy"
+      - "--providers.docker.exposedbydefault=false"
+      # --- EntryPoints ---
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      # Redirecionar HTTP → HTTPS automaticamente
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      # --- ACME (Let's Encrypt) ---
+      - "--certificatesresolvers.letsencrypt.acme.email=luizplayer2016@hotmail.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/certs/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
 
   web:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: stockpile_django
+    networks:
+      - proxy
     volumes:
       - ./data:/app/data
     environment:
@@ -38,7 +53,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.stockpile.rule=Host(`stock.hlspace.org`)"
       - "traefik.http.routers.stockpile.entrypoints=websecure"
-      - "traefik.http.routers.stockpile.tls.certresolver=le"
-volumes:
-  traefik:
-    name: traefik
+      - "traefik.http.routers.stockpile.tls=true"
+      - "traefik.http.routers.stockpile.tls.certresolver=letsencrypt"
+networks:
+  proxy:
+    external: true
