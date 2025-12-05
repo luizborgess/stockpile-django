@@ -11,7 +11,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yml:/etc/traefik/traefik.yml
-      - traefik:/certs
+      - letsencrypt:/letsencrypt
     networks:
       - proxy
   web:
@@ -34,8 +34,8 @@ services:
       - "traefik.http.routers.stockpile.tls=true"
       - "traefik.http.routers.stockpile.tls.certresolver=letsencrypt"
 volumes:
-  traefik:
-    name: traefik
+  letsencrypt:
+    name: letsencrypt
 
 networks:
   proxy:
